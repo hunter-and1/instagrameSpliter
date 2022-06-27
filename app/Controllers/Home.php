@@ -4,9 +4,44 @@ namespace App\Controllers;
 
 class Home extends BaseController
 {
+    
     public function index()
     {
         return view('index');
+    }
+
+    public function ajax_upload()
+    {
+        /* mp4 ogv webm ogg mp3 wav m4a */
+        $maxfile = 1024 * 100;
+        $input = $this->validate([
+            'formFile' => [
+                'uploaded[formFile]',
+                'mime_in[formFile,video/mp4,video/ogg,video/webm,audio/webm,audio/wav,audio/ogg,audio/mpeg,video/mpeg]',
+                'max_size[formFile,'.$maxfile.']',
+            ]
+        ]);
+
+        if (!$input) {
+            return $this->response->setJSON([
+                'error'=>true,
+                'message'=>'Choose a valid file'
+            ]);
+        } 
+        
+        $video = $this->request->getFile('formFile');
+        $video->move(WRITEPATH . 'uploads');
+
+        $data = [
+            'name' =>  $video->getName(),
+            'type'  => $video->getClientMimeType()
+        ];
+
+        return $this->response->setJSON([
+            'error' =>false,
+            'message'=>'File has successfully uploaded',
+            'data' => $data
+        ]);   
     }
 
     public function download(){
