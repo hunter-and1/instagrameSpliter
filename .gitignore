@@ -128,3 +128,8 @@ nb-configuration.xml
 /.phpunit.*.cache
 
 /.php-cs-fixer.php
+
+
+/py/*.mp4
+/py/*.mp3
+/py/*.json
